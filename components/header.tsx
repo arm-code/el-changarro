@@ -2,8 +2,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useTheme } from "next-themes"
-import { Wrench, Sun, Moon } from "lucide-react"
+import { Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useHasMounted } from "@/hooks/useHasMounted"
 
@@ -37,9 +38,14 @@ export function Header() {
                     href="/"
                     className="flex items-center gap-2 rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-primary">
-                        <Wrench className="size-5 text-primary-foreground" aria-hidden="true" />
-                    </span>
+                    <Image
+                        src="/icon_192x192_nobg.png"
+                        alt="El Changarro"
+                        width={36}
+                        height={36}
+                        className="rounded-lg object-contain"
+                        priority
+                    />
                     <span className="text-lg font-semibold tracking-tight sm:text-xl">El Changarro</span>
                 </Link>
 
