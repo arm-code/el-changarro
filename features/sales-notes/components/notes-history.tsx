@@ -24,6 +24,11 @@ import { AppBottomSheet } from '@/components/ui/app-bottom-sheet'
 import { normalizeSearch, toSlug } from '@/lib/display'
 import { cn } from '@/lib/utils'
 
+/** Con pocas notas buscar es ruido; el buscador aparece a partir de aquí. */
+const SEARCH_MIN_NOTES = 3
+
+const FOCUS_RING = 'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50'
+
 /** Pantalla principal de la herramienta: historial, búsqueda, detalle y borrado. */
 export function NotesHistory() {
   const [query, setQuery] = useState('')
@@ -34,6 +39,9 @@ export function NotesHistory() {
   const { data: notes = [], isLoading, isError, refetch } = useSalesNotes()
   const business = useBusinessInfo()
   const deleteMutation = useDeleteSalesNote()
+
+  const hasNotes = notes.length > 0
+  const hasBusinessName = Boolean(business.name.trim())
 
   const filtered = useMemo(() => {
     const q = normalizeSearch(query.trim())
@@ -57,72 +65,77 @@ export function NotesHistory() {
   }
 
   return (
-    <div className="space-y-8 pb-28 sm:pb-8">
-      {/* Grupo: Navegación + Encabezado. Así conviven sin romper el space-y-8 */}
+    <div className="space-y-6 pb-28 sm:pb-8">
+      {/* Navegación + encabezado */}
       <div>
-        <Button
-          asChild
-          variant="ghost"
-          className="-ml-3 mb-2 text-muted-foreground hover:text-foreground"
-        >
+        <Button asChild variant="ghost" className="-ml-3 mb-2 text-muted-foreground hover:text-foreground">
           <Link href="/">
             <ArrowLeft aria-hidden="true" />
             Volver a herramientas
           </Link>
         </Button>
         <PageHeader
-          title="Tus notas"
-          description="Busca, comparte o administra tus notas y cotizaciones."
+          title="Notas de venta"
+          description="Tus notas y cotizaciones, guardadas en este dispositivo."
+          // En móvil la acción es el botón flotante; en el estado vacío, la tarjeta de bienvenida.
           action={
-            <Button asChild className={TOUCH}>
-              <Link href={SALES_NOTES_ROUTES.create}>
-                <FilePlus2 aria-hidden="true" />
-                Crear nota
-              </Link>
-            </Button>
+            hasNotes ? (
+              <Button asChild className={cn(TOUCH, 'hidden sm:inline-flex')}>
+                <Link href={SALES_NOTES_ROUTES.create}>
+                  <FilePlus2 aria-hidden="true" />
+                  Crear nota
+                </Link>
+              </Button>
+            ) : undefined
           }
         />
       </div>
 
+      {/* Datos del negocio: invitación si falta el nombre, fila discreta si ya existe */}
       <button
         type="button"
         onClick={() => setBusinessOpen(true)}
         className={cn(
-          "flex w-full min-h-20 items-center gap-3.5 rounded-xl border bg-card p-4 text-left",
-          "transition-colors hover:bg-accent active:bg-accent",
-          "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          'flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors',
+          hasBusinessName
+            ? 'min-h-14 bg-card hover:bg-accent active:bg-accent'
+            : 'min-h-16 border-primary/30 bg-primary/5 hover:bg-primary/10 active:bg-primary/10',
+          FOCUS_RING
         )}
       >
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
-          <Store className="size-5 text-muted-foreground" aria-hidden="true" />
-        </span>
+        <Store
+          className={cn('size-5 shrink-0', hasBusinessName ? 'text-muted-foreground' : 'text-primary')}
+          aria-hidden="true"
+        />
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-base font-medium">
-            {business.name || 'Agrega el nombre de tu negocio'}
+          <span className="block truncate text-[15px] font-medium">
+            {hasBusinessName ? business.name : 'Agrega el nombre de tu negocio'}
           </span>
-          <span className="block truncate text-sm text-muted-foreground text-pretty">
-            {business.name ? 'Sale en tus documentos · Toca para editar' : 'Para que salga en tus notas'}
+          <span className="block truncate text-sm text-muted-foreground">
+            {hasBusinessName ? 'Así sale en tus notas y cotizaciones' : 'Para que aparezca en tus notas y cotizaciones'}
           </span>
         </span>
-        <Pencil className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+        <Pencil className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
       </button>
 
-      <section aria-label="Buscar notas">
-        <SearchInput value={query} onChange={setQuery} placeholder="Buscar por folio o cliente" />
-      </section>
+      {notes.length > SEARCH_MIN_NOTES && (
+        <section aria-label="Buscar notas">
+          <SearchInput value={query} onChange={setQuery} placeholder="Buscar por folio o cliente" />
+        </section>
+      )}
 
       <section aria-label="Lista de notas">
         <NotesList
           notes={filtered}
           isLoading={isLoading}
           isError={isError}
-          isFiltered={notes.length > 0}
+          isFiltered={hasNotes}
           onRetry={() => refetch()}
           onSelect={setSelected}
         />
       </section>
 
-      <MobileFab href={SALES_NOTES_ROUTES.create} aria-label="Nueva nota de venta" title="Nueva nota" />
+      {hasNotes && <MobileFab href={SALES_NOTES_ROUTES.create} aria-label="Nueva nota de venta" title="Nueva nota" />}
 
       {/* Detalle de la nota */}
       <AppBottomSheet

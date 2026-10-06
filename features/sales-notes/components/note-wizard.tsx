@@ -1,3 +1,4 @@
+// features/sales-notes/components/note-wizard.tsx
 'use client'
 
 import { useMemo, useState, type ChangeEvent } from 'react'
@@ -13,7 +14,7 @@ import type { Note, NoteItem, NoteStatus } from '../types'
 import { PrintSaleNoteDocument } from './sale-note-document'
 import { NoteCardPreview } from './note-card-preview'
 import { DocumentActions } from './document-actions'
-import { PageHeader } from '@/components/ui/page-header'
+import { PageHeader } from '@/components/page-header'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -21,16 +22,42 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { AppBottomSheet } from '@/components/ui/app-bottom-sheet'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { toSlug } from '@/lib/display'
 import { cn } from '@/lib/utils'
 
 type Step = 1 | 2 | 3
+
+/** Límites de captura: evitan datos absurdos o documentos imposibles de imprimir. */
+const LIMITS = {
+  name: 80,
+  phone: 20,
+  address: 120,
+  description: 120,
+  notes: 500,
+  maxQuantity: 100_000,
+  maxPrice: 10_000_000,
+} as const
+
+/** Convierte lo tecleado en un número entre 0 y `max` (nunca negativo, NaN ni infinito). */
+function toBoundedNumber(raw: string, max: number): number {
+  const value = Number(raw)
+  if (!Number.isFinite(value)) return 0
+  return Math.min(Math.max(value, 0), max)
+}
 
 function emptyItem(): NoteItem {
   return { id: genId('it'), description: '', quantity: 1, unitPrice: 0 }
 }
 
+function kindLabel(status: NoteStatus): string {
+  return status === 'quote' ? 'Cotización' : 'Nota'
+}
+
 const OPTION_CARD =
-  'flex h-full cursor-pointer flex-col items-center justify-between rounded-xl border-2 border-muted bg-transparent p-4 transition-all hover:bg-muted/50 active:scale-[0.98] peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5'
+  'flex h-full cursor-pointer flex-col items-center justify-between rounded-xl border-2 border-muted bg-transparent p-4 transition-all hover:bg-muted/50 active:scale-[0.98] motion-reduce:transition-none peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5'
+
+const STEP_ENTER = 'animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none'
 
 interface NoteWizardProps {
   /** Si viene, el asistente edita esa nota; si no, crea una nueva. */
@@ -60,9 +87,28 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
   const [status, setStatus] = useState<NoteStatus>(initialNote?.status ?? 'quote')
 
   const [savedNote, setSavedNote] = useState<Note | null>(null)
+  const [confirmExit, setConfirmExit] = useState(false)
 
   const ivaRate = initialNote?.ivaRate ?? IVA_RATE
   const totals = useMemo(() => computeNoteTotals(items, applyIva, ivaRate), [items, applyIva, ivaRate])
+
+  // Detecta cambios sin guardar comparando contra la foto del primer render (sin ids de conceptos).
+  const snapshot = JSON.stringify([
+    customerName,
+    customerPhone,
+    customerAddress,
+    items.map((it) => [it.description, it.quantity, it.unitPrice]),
+    applyIva,
+    notes,
+    status,
+  ])
+  const [initialSnapshot] = useState(snapshot)
+  const isDirty = snapshot !== initialSnapshot
+
+  function requestExit() {
+    if (isDirty && !savedNote) setConfirmExit(true)
+    else router.push(SALES_NOTES_ROUTES.list)
+  }
 
   function handleNextStep1() {
     if (!customerName.trim()) {
@@ -126,33 +172,43 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
     )
   }
 
-  const kindLabel = (s: NoteStatus) => (s === 'quote' ? 'Cotización' : 'Nota')
-
-  // Footer unificado para navegación de pasos
+  // Footer de navegación. En móvil: [Atrás | Siguiente] en una fila y "Cancelar" discreto debajo.
   const renderWizardFooter = (primaryAction: () => void, primaryLabel: string, showBack = true) => (
-    <div className="flex flex-col-reverse gap-3 border-t bg-muted/20 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+    <div className="flex flex-col gap-2 border-t bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
       <Button
+        type="button"
         variant="ghost"
-        onClick={() => router.push(SALES_NOTES_ROUTES.list)}
-        className="h-11 text-muted-foreground hover:text-destructive"
+        onClick={requestExit}
+        className="order-last h-11 text-muted-foreground sm:order-first"
       >
-        Cancelar y salir
+        Cancelar
       </Button>
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+
+      <div className="flex gap-3">
         {showBack && (
-          <Button variant="outline" onClick={() => setStep((s) => (s - 1) as Step)} className="h-11 w-full px-4 sm:w-auto">
-            <ArrowLeft className="mr-2 size-4" aria-hidden />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setStep((s) => (s - 1) as Step)}
+            className="h-12 px-4 sm:h-11"
+          >
+            <ArrowLeft aria-hidden="true" />
             Atrás
           </Button>
         )}
-        <Button onClick={primaryAction} disabled={saveMutation.isPending} className="h-11 w-full px-8 sm:w-auto">
+        <Button
+          type="button"
+          onClick={primaryAction}
+          disabled={saveMutation.isPending}
+          className="h-12 flex-1 px-8 sm:h-11 sm:flex-none"
+        >
           {saveMutation.isPending ? (
-            <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
+            <Loader2 className="animate-spin" aria-hidden="true" />
           ) : step === 3 ? (
-            <Save className="mr-2 size-4" aria-hidden />
+            <Save aria-hidden="true" />
           ) : null}
           {primaryLabel}
-          {step !== 3 && <ArrowRight className="ml-2 size-4" aria-hidden />}
+          {step !== 3 && <ArrowRight aria-hidden="true" />}
         </Button>
       </div>
     </div>
@@ -165,17 +221,33 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
         description={isEditing ? initialNote!.folio : undefined}
       />
 
-      <div aria-hidden="true" className="flex items-center gap-2 px-1">
+      <div
+        role="progressbar"
+        aria-label="Progreso"
+        aria-valuemin={1}
+        aria-valuemax={3}
+        aria-valuenow={step}
+        aria-valuetext={`Paso ${step} de 3`}
+        className="flex items-center gap-2 px-1"
+      >
         {[1, 2, 3].map((n) => (
-          <div key={n} className={cn('h-1.5 flex-1 rounded-full transition-colors', step >= n ? 'bg-primary' : 'bg-muted')} />
+          <div
+            key={n}
+            className={cn(
+              'h-1.5 flex-1 rounded-full transition-colors motion-reduce:transition-none',
+              step >= n ? 'bg-primary' : 'bg-muted'
+            )}
+          />
         ))}
       </div>
 
       {/* ─── PASO 1 ──────────────────────────────────────────────── */}
       {step === 1 && (
-        <section aria-labelledby="step-1-title" className="animate-in fade-in slide-in-from-right-4 duration-300">
+        <section aria-labelledby="step-1-title" className={STEP_ENTER}>
           <div className="mb-4">
-            <h2 id="step-1-title" className="text-lg font-semibold">Datos del cliente</h2>
+            <h2 id="step-1-title" className="text-lg font-semibold">
+              Datos del cliente
+            </h2>
             <p className="text-sm text-muted-foreground">Paso 1 de 3: ¿A quién le estás vendiendo o cotizando?</p>
           </div>
           <Card className="gap-0 py-0">
@@ -189,6 +261,8 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                   value={customerName}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomerName(e.target.value)}
                   placeholder="Nombre completo / negocio"
+                  maxLength={LIMITS.name}
+                  autoComplete="off"
                   className="h-11 text-base capitalize"
                   autoFocus
                 />
@@ -202,6 +276,8 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                     value={customerPhone}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomerPhone(e.target.value)}
                     placeholder="Ej. 656 123 4567"
+                    maxLength={LIMITS.phone}
+                    autoComplete="off"
                     className="h-11 text-base"
                   />
                 </div>
@@ -212,6 +288,8 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                     value={customerAddress}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomerAddress(e.target.value)}
                     placeholder="Lugar de entrega"
+                    maxLength={LIMITS.address}
+                    autoComplete="off"
                     className="h-11 text-base capitalize"
                   />
                 </div>
@@ -224,9 +302,11 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
 
       {/* ─── PASO 2 ────────────────────────────────────────────── */}
       {step === 2 && (
-        <section aria-labelledby="step-2-title" className="animate-in fade-in slide-in-from-right-4 duration-300">
+        <section aria-labelledby="step-2-title" className={STEP_ENTER}>
           <div className="mb-4">
-            <h2 id="step-2-title" className="text-lg font-semibold">Conceptos</h2>
+            <h2 id="step-2-title" className="text-lg font-semibold">
+              Conceptos
+            </h2>
             <p className="text-sm text-muted-foreground">Paso 2 de 3: ¿Qué artículos o servicios incluyes?</p>
           </div>
 
@@ -237,7 +317,7 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                   <AccordionTrigger className="rounded-none border-b px-4 py-4 hover:bg-muted/30 hover:no-underline sm:px-5">
                     <div className="flex w-full min-w-0 flex-1 items-center justify-between pr-4">
                       <div className="flex min-w-0 flex-col items-start gap-1">
-                        <span className="truncate text-[15px] font-semibold text-foreground capitalize">
+                        <span className="truncate text-[15px] font-semibold capitalize text-foreground">
                           {item.description.trim() ? item.description : `Concepto ${index + 1}`}
                         </span>
                         <span className="text-xs font-normal text-muted-foreground">
@@ -250,7 +330,7 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="border-b bg-muted/10 px-4 pt-4 pb-5 sm:px-5">
+                  <AccordionContent className="border-b bg-muted/10 px-4 pb-5 pt-4 sm:px-5">
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor={`desc-${item.id}`}>Descripción</Label>
@@ -259,6 +339,8 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                           value={item.description}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => updateItem(item.id, { description: e.target.value })}
                           placeholder="Ej. Renta de mesa y sillas"
+                          maxLength={LIMITS.description}
+                          autoComplete="off"
                           className="h-11 bg-background text-base capitalize"
                         />
                       </div>
@@ -271,9 +353,10 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                             type="number"
                             inputMode="numeric"
                             min={1}
+                            max={LIMITS.maxQuantity}
                             value={item.quantity === 0 ? '' : item.quantity}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                              updateItem(item.id, { quantity: Number(e.target.value) || 0 })
+                              updateItem(item.id, { quantity: toBoundedNumber(e.target.value, LIMITS.maxQuantity) })
                             }
                             className="h-11 bg-background text-base tabular-nums"
                           />
@@ -285,9 +368,10 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                             type="number"
                             inputMode="decimal"
                             min={0}
+                            max={LIMITS.maxPrice}
                             value={item.unitPrice === 0 ? '' : item.unitPrice}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                              updateItem(item.id, { unitPrice: Number(e.target.value) || 0 })
+                              updateItem(item.id, { unitPrice: toBoundedNumber(e.target.value, LIMITS.maxPrice) })
                             }
                             className="h-11 bg-background text-base tabular-nums"
                           />
@@ -296,13 +380,14 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
 
                       <div className="flex justify-end pt-2">
                         <Button
+                          type="button"
                           variant="ghost"
                           size="sm"
                           className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                           onClick={() => removeItem(item.id)}
                           disabled={items.length === 1}
                         >
-                          <Trash2 className="mr-2 size-4" aria-hidden />
+                          <Trash2 aria-hidden="true" />
                           Eliminar este concepto
                         </Button>
                       </div>
@@ -313,8 +398,8 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
             </Accordion>
 
             <div className="p-4 sm:p-5">
-              <Button variant="outline" onClick={addItem} className="h-11 w-full border-dashed text-primary">
-                <Plus className="mr-2 size-4" aria-hidden />
+              <Button type="button" variant="outline" onClick={addItem} className="h-11 w-full border-dashed text-primary">
+                <Plus aria-hidden="true" />
                 Agregar otro concepto
               </Button>
             </div>
@@ -325,9 +410,11 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
 
       {/* ─── PASO 3 ───────────────────────────────────────── */}
       {step === 3 && (
-        <section aria-labelledby="step-3-title" className="animate-in fade-in slide-in-from-right-4 duration-300">
+        <section aria-labelledby="step-3-title" className={STEP_ENTER}>
           <div className="mb-4">
-            <h2 id="step-3-title" className="text-lg font-semibold">Detalles finales</h2>
+            <h2 id="step-3-title" className="text-lg font-semibold">
+              Detalles finales
+            </h2>
             <p className="text-sm text-muted-foreground">Paso 3 de 3: Ajustes, notas adicionales y guardado.</p>
           </div>
 
@@ -360,7 +447,7 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
 
                 <label
                   className={cn(
-                    'flex cursor-pointer items-center justify-between rounded-xl border-2 p-4 transition-all hover:bg-muted/50 active:scale-[0.98]',
+                    'flex cursor-pointer items-center justify-between rounded-xl border-2 p-4 transition-all hover:bg-muted/50 active:scale-[0.98] motion-reduce:transition-none',
                     applyIva ? 'border-primary bg-primary/5' : 'border-muted bg-transparent'
                   )}
                 >
@@ -385,12 +472,13 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
                     value={notes}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
                     placeholder="Condiciones de pago, validez de la cotización..."
-                    className="flex min-h-[100px] w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-base placeholder:text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                    maxLength={LIMITS.notes}
+                    className="flex min-h-[100px] w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-col justify-end space-y-4 rounded-xl border bg-muted/20 p-5">
+              <div className="flex flex-col justify-end space-y-4 rounded-xl border bg-muted/30 p-5">
                 <h3 className="border-b pb-2 text-sm font-semibold text-muted-foreground">Resumen a cobrar</h3>
                 <div className="flex justify-between text-[15px] text-muted-foreground">
                   <span>Subtotal</span>
@@ -419,12 +507,12 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
         open={savedNote !== null}
         onOpenChange={(o) => !o && router.push(SALES_NOTES_ROUTES.list)}
         title={savedNote ? `${kindLabel(savedNote.status)} ${savedNote.folio}` : ''}
-        mobileHeight="92dvh"
+        mobileHeight="max-h-[92dvh]"
         footer={
           savedNote && (
             <DocumentActions
               placement="inline"
-              filename={`${kindLabel(savedNote.status).toLowerCase()}-${savedNote.folio}`}
+              filename={`${toSlug(kindLabel(savedNote.status), 'nota')}-${toSlug(savedNote.folio, 'folio')}`}
               exportNode={<PrintSaleNoteDocument note={savedNote} business={business} />}
             />
           )
@@ -432,6 +520,17 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
       >
         {savedNote && <NoteCardPreview note={savedNote} />}
       </AppBottomSheet>
+
+      {/* Confirmación al salir con datos sin guardar */}
+      <ConfirmDialog
+        open={confirmExit}
+        onOpenChange={setConfirmExit}
+        title="¿Salir sin guardar?"
+        description="Los datos que capturaste se perderán."
+        confirmText="Sí, salir"
+        onConfirm={() => router.push(SALES_NOTES_ROUTES.list)}
+        isPending={false}
+      />
     </div>
   )
 }

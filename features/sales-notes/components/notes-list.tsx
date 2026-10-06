@@ -1,7 +1,8 @@
+// features/sales-notes/components/notes-list.tsx
 'use client'
 
 import Link from 'next/link'
-import { ChevronRight, FileText, RotateCw } from 'lucide-react'
+import { ChevronRight, FilePlus2, FileText, Receipt, RotateCw } from 'lucide-react'
 import { noteTotal } from '../lib/calculations'
 import { formatCurrency, formatDate } from '../lib/format'
 import { SALES_NOTES_ROUTES } from '../routes'
@@ -29,45 +30,54 @@ export function NotesList({ notes, isLoading, isError, isFiltered, onRetry, onSe
   return (
     <Card className="gap-0 overflow-hidden py-0">
       <ul className="divide-y">
-        {notes.map((note) => (
-          <li key={note.id}>
-            <Button
-              variant="ghost"
-              onClick={() => onSelect(note)}
-              className={cn(
-                'flex h-auto min-h-16 w-full items-center justify-start gap-3 rounded-none px-4 py-3 text-left font-normal',
-                'transition-colors hover:bg-accent/60 active:bg-accent',
-                'outline-none focus-visible:bg-accent'
-              )}
-            >
-              <div className="flex size-12 shrink-0 flex-col items-center justify-center rounded-lg bg-muted leading-none">
-                <FileText className="size-5 text-muted-foreground" aria-hidden />
-              </div>
+        {notes.map((note) => {
+          const isQuote = note.status === 'quote'
 
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[15px] font-medium text-foreground capitalize">{note.customer.name}</p>
-                <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted-foreground">
-                  <span className="font-mono uppercase">{note.folio}</span>
-                  <span aria-hidden>&bull;</span>
-                  <span className="capitalize">{formatDate(note.createdAt)}</span>
-                </div>
-              </div>
-
-              <div className="flex shrink-0 flex-col items-end gap-0.5 sm:mr-4">
-                <span className="text-[15px] font-medium tabular-nums text-foreground">
-                  {formatCurrency(noteTotal(note))}
+          return (
+            <li key={note.id}>
+              <Button
+                variant="ghost"
+                onClick={() => onSelect(note)}
+                className={cn(
+                  'flex h-auto min-h-[4.5rem] w-full items-center justify-start gap-3 rounded-none px-4 py-3 text-left font-normal',
+                  'transition-colors hover:bg-accent active:bg-accent',
+                  'outline-none focus-visible:bg-accent'
+                )}
+              >
+                {/* El ícono distingue de un vistazo: nota confirmada (color) vs cotización (neutro) */}
+                <span
+                  className={cn(
+                    'flex size-11 shrink-0 items-center justify-center rounded-xl',
+                    isQuote ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'
+                  )}
+                  aria-hidden="true"
+                >
+                  {isQuote ? <FileText className="size-5" /> : <Receipt className="size-5" />}
                 </span>
-                <span className={cn('text-xs', note.status === 'quote' ? 'text-muted-foreground' : 'text-success')}>
-                  {note.status === 'quote' ? 'Cotización' : 'Nota'}
-                </span>
-              </div>
 
-              <div className="flex items-center text-muted-foreground/40 sm:mr-2">
-                <ChevronRight className="size-5" aria-hidden />
-              </div>
-            </Button>
-          </li>
-        ))}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[15px] font-medium capitalize text-foreground">
+                    {note.customer.name}
+                  </span>
+                  <span className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted-foreground">
+                    <span className="font-mono uppercase">{note.folio}</span>
+                    <span aria-hidden="true">&bull;</span>
+                    <span className="capitalize">{formatDate(note.createdAt)}</span>
+                  </span>
+                </span>
+
+                <span className="flex shrink-0 flex-col items-end gap-0.5">
+                  <span className="text-[15px] font-semibold tabular-nums text-foreground">
+                    {formatCurrency(noteTotal(note))}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{isQuote ? 'Cotización' : 'Nota'}</span>
+                </span>
+
+                <ChevronRight className="size-5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
+              </Button>
+            </li>
+          )
+        })}
       </ul>
     </Card>
   )
@@ -78,13 +88,18 @@ export function NotesList({ notes, isLoading, isError, isFiltered, onRetry, onSe
 function EmptyNotes() {
   return (
     <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
-      <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <FileText className="size-6" aria-hidden />
-      </div>
-      <p className="text-[15px] font-medium">Aún no tienes notas registradas</p>
-      <p className="text-sm text-muted-foreground">Se guardan en este dispositivo.</p>
-      <Button asChild className="mt-2">
-        <Link href={SALES_NOTES_ROUTES.create}>Crear nota</Link>
+      <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <Receipt className="size-7" aria-hidden="true" />
+      </span>
+      <h3 className="text-lg font-semibold">Haz tu primera nota</h3>
+      <p className="max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+        Agrega a tu cliente y sus conceptos. Luego compártela por WhatsApp o descárgala en PDF.
+      </p>
+      <Button asChild className="mt-2 h-12 px-6 text-base">
+        <Link href={SALES_NOTES_ROUTES.create}>
+          <FilePlus2 aria-hidden="true" />
+          Crear nota
+        </Link>
       </Button>
     </Card>
   )
@@ -103,7 +118,7 @@ function InlineError({ message, onRetry }: { message: string; onRetry: () => voi
     <Card className="flex flex-col items-center justify-between gap-4 p-5 sm:flex-row">
       <p className="text-[15px] text-muted-foreground">{message}</p>
       <Button variant="outline" onClick={onRetry} className="w-full sm:w-auto">
-        <RotateCw className="mr-2 size-4" aria-hidden />
+        <RotateCw aria-hidden="true" />
         Reintentar
       </Button>
     </Card>
@@ -115,8 +130,8 @@ function NotesSkeleton() {
     <Card className="gap-0 py-0" aria-busy="true" aria-label="Cargando notas">
       <div className="divide-y">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex min-h-16 items-center gap-3 px-4 py-3 text-left">
-            <Skeleton className="size-12 shrink-0 rounded-lg" />
+          <div key={i} className="flex min-h-[4.5rem] items-center gap-3 px-4 py-3 text-left">
+            <Skeleton className="size-11 shrink-0 rounded-xl" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-3/5" />
               <Skeleton className="h-3.5 w-2/5" />

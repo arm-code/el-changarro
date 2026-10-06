@@ -1,3 +1,4 @@
+// features/sales-notes/components/sale-note-document.tsx
 import { computeNoteTotals, itemAmount } from '../lib/calculations'
 import { formatCurrency, formatDate } from '../lib/format'
 import type { BusinessInfo, Note } from '../types'
@@ -8,7 +9,12 @@ interface SaleNoteDocumentProps {
   business: BusinessInfo
 }
 
-/** Nodo de exportación (PDF/PNG). Ancho fijo de 794px = hoja Carta. */
+/**
+ * Nodo de exportación (PDF/PNG). Ancho fijo de 794px = hoja Carta.
+ * IMPORTANTE: aquí solo van colores fijos (neutral-*, emerald-*), nunca tokens del tema
+ * (text-success, bg-primary...). Los tokens cambian en modo oscuro y el documento
+ * siempre debe salir igual: es lo que recibe el cliente.
+ */
 export function PrintSaleNoteDocument({ note, business }: SaleNoteDocumentProps) {
   const totals = computeNoteTotals(note.items, note.applyIva, note.ivaRate)
   const businessName = business.name.trim() || 'Mi negocio'
@@ -19,8 +25,7 @@ export function PrintSaleNoteDocument({ note, business }: SaleNoteDocumentProps)
       <header className="mb-8 flex items-start justify-between border-b border-neutral-200 pb-6">
         <div>
           <h1 className="text-2xl font-semibold">{businessName}</h1>
-          <p className="mt-1 text-neutral-500">Nota de venta / Servicio</p>
-          {business.phone && <p className="text-neutral-500">{business.phone}</p>}
+          {business.phone && <p className="mt-1 text-neutral-500">{business.phone}</p>}
         </div>
         <div className="flex flex-col items-end gap-2">
           <span
@@ -28,7 +33,7 @@ export function PrintSaleNoteDocument({ note, business }: SaleNoteDocumentProps)
               'rounded-md border px-3 py-1 text-xs font-semibold',
               note.status === 'quote'
                 ? 'border-neutral-200 bg-neutral-100 text-neutral-600'
-                : 'border-success/20 bg-success/10 text-success'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-700'
             )}
           >
             {kind}
