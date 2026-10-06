@@ -1,5 +1,5 @@
-export default function Page() {
-    return (
-        <h1>Sales Note</h1>
-    )
+import { NotesHistory } from "@/features/sales-notes"
+
+export default function SalesNotesPage() {
+  return <NotesHistory />
 }
