@@ -1,16 +1,15 @@
+// components/header.tsx
 "use client"
 
 import Link from "next/link"
 import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-} from "@/components/ui/sheet"
 import { Menu, Wrench, Sun, Moon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { useHasMounted } from "@/hooks/useHasMounted"
+import { cn } from "@/lib/utils"
+import { TOUCH } from "@/components/ui/detail"
 
 const navItems: { href: string; label: string }[] = []
 
@@ -24,13 +23,13 @@ function ThemeToggle() {
 
     return (
         <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="size-11 rounded-full"
+            className="size-11 rounded-full text-muted-foreground hover:text-foreground"
             aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
             onClick={() => setTheme(isDark ? "light" : "dark")}
         >
-            {isDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+            {isDark ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
         </Button>
     )
 }
@@ -39,75 +38,85 @@ export function Header() {
     const [open, setOpen] = useState(false)
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                        <Wrench className="h-5 w-5 text-primary-foreground" />
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-4 backdrop-blur-xl">
+            <div className="mx-auto flex h-16 max-w-4xl items-center justify-between">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-lg"
+                >
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary">
+                        <Wrench className="size-5 text-primary-foreground" aria-hidden="true" />
                     </div>
-                    <span className="text-xl font-bold tracking-tight">El Changarro</span>
+                    <span className="text-xl font-semibold tracking-tight">El Changarro</span>
                 </Link>
 
-                {/* Desktop Navigation */}
+                {/* Escritorio */}
                 <nav className="hidden items-center gap-6 md:flex">
                     {navItems.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                            className="text-[15px] font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
                             {item.label}
                         </Link>
                     ))}
                 </nav>
 
-                <div className="hidden items-center gap-3 md:flex">
+                <div className="hidden items-center gap-2 md:flex">
                     <ThemeToggle />
-                    <Button variant="ghost" asChild>
+                    <Button variant="ghost" asChild className="rounded-xl px-4">
                         <Link href="/login">Ingresar</Link>
                     </Button>
-                    <Button asChild>
+                    <Button asChild className="rounded-xl px-4">
                         <Link href="/register">Registrarse</Link>
                     </Button>
                 </div>
 
-                {/* Mobile Navigation */}
-                <div className="flex items-center gap-2 md:hidden">
+                {/* Móvil */}
+                <div className="flex items-center md:hidden">
                     <ThemeToggle />
                     <Sheet open={open} onOpenChange={setOpen}>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                <Menu className="h-5 w-5" />
+                            <Button variant="ghost" size="icon" className="size-11 rounded-full text-muted-foreground hover:text-foreground">
+                                <Menu className="size-5" aria-hidden="true" />
                                 <span className="sr-only">Abrir menú</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                            <div className="flex flex-col gap-6 pt-6">
-                                <div className="flex items-center justify-between px-4">
+                        <SheetContent side="right" className="w-[85vw] max-w-xs border-l p-0 sm:max-w-sm">
+                            <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
+                            <div className="flex h-full flex-col">
+                                <div className="flex h-16 shrink-0 items-center border-b px-6">
                                     <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                                            <Wrench className="h-5 w-5 text-primary-foreground" />
+                                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary">
+                                            <Wrench className="size-5 text-primary-foreground" aria-hidden="true" />
                                         </div>
-                                        <span className="text-xl font-semibold">El Changarro</span>
+                                        <span className="text-xl font-semibold tracking-tight">El Changarro</span>
                                     </Link>
                                 </div>
-                                <nav className="flex flex-col gap-4 px-4">
-                                    {navItems.map((item) => (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
-                                            onClick={() => setOpen(false)}
-                                        >
-                                            {item.label}
-                                        </Link>
-                                    ))}
+
+                                <nav className="flex flex-1 flex-col overflow-y-auto p-6">
+                                    {navItems.length > 0 && (
+                                        <div className="mb-6 space-y-4">
+                                            {navItems.map((item) => (
+                                                <Link
+                                                    key={item.href}
+                                                    href={item.href}
+                                                    className="block text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
+                                                    onClick={() => setOpen(false)}
+                                                >
+                                                    {item.label}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
                                 </nav>
-                                <div className="flex flex-col gap-3 px-4 pt-4">
-                                    <Button variant="outline" asChild className="w-full">
+
+                                <div className="shrink-0 space-y-3 border-t p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+                                    <Button variant="outline" asChild className={cn(TOUCH, "w-full")}>
                                         <Link href="/login" onClick={() => setOpen(false)}>Ingresar</Link>
                                     </Button>
-                                    <Button asChild className="w-full">
+                                    <Button asChild className={cn(TOUCH, "w-full")}>
                                         <Link href="/register" onClick={() => setOpen(false)}>Registrarse</Link>
                                     </Button>
                                 </div>

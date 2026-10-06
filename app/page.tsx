@@ -1,3 +1,4 @@
+// app/page.tsx
 import Link from "next/link"
 import {
   Receipt,
@@ -18,13 +19,9 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Badge } from "@/components/ui/badge"
 import { InstallBanner } from "@/components/home/install-banner"
+import { cn } from "@/lib/utils"
 
-const dailyTools: {
-  title: string
-  description: string
-  icon: LucideIcon
-  href?: string
-}[] = [
+const dailyTools = [
   {
     title: "Notas de venta",
     description: "Haz recibos para tus clientes en segundos",
@@ -54,7 +51,7 @@ const dailyTools: {
   },
 ]
 
-const upcomingTools: { title: string; description: string; icon: LucideIcon }[] = [
+const upcomingTools = [
   {
     title: "Libreta de fiado",
     description: "Para saber quién te debe, sin el cuaderno",
@@ -89,19 +86,19 @@ export default function HomePage() {
 
       <main className="flex-1">
         <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <header className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl text-balance">
               Las herramientas de tu changarro
             </h1>
-            <p className="max-w-md text-base text-muted-foreground">
+            <p className="max-w-prose text-base leading-relaxed text-muted-foreground text-pretty">
               Notas de venta, cotizaciones, gastos y contratos, listos desde tu celular.
             </p>
-          </div>
+          </header>
 
           <InstallBanner />
 
-          <section aria-labelledby="daily-tools-title">
-            <h2 id="daily-tools-title" className="sr-only">
+          <section aria-labelledby="daily-tools-title" className="space-y-3">
+            <h2 id="daily-tools-title" className="text-base font-semibold">
               Herramientas del día a día
             </h2>
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -110,21 +107,25 @@ export default function HomePage() {
                   {tool.href ? (
                     <Link
                       href={tool.href}
-                      className="flex min-h-19 items-center gap-3.5 rounded-xl border bg-card p-4 active:bg-accent"
+                      className={cn(
+                        "flex min-h-20 items-center gap-3.5 rounded-xl border bg-card p-4",
+                        "transition-colors hover:bg-accent active:bg-accent",
+                        "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      )}
                     >
                       <ToolIcon icon={tool.icon} />
                       <div className="min-w-0 flex-1">
-                        <p className="text-base font-semibold">{tool.title}</p>
-                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                        <p className="text-base font-medium">{tool.title}</p>
+                        <p className="text-sm text-muted-foreground text-pretty">{tool.description}</p>
                       </div>
-                      <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                      <ChevronRight className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
                     </Link>
                   ) : (
-                    <div className="flex min-h-19 items-center gap-3.5 rounded-xl border border-dashed p-4 opacity-70">
+                    <div className="flex min-h-20 items-center gap-3.5 rounded-xl border bg-card/50 p-4 opacity-80 grayscale-[0.5]">
                       <ToolIcon icon={tool.icon} muted />
                       <div className="min-w-0 flex-1">
-                        <p className="text-base font-semibold">{tool.title}</p>
-                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                        <p className="text-base font-medium">{tool.title}</p>
+                        <p className="text-sm text-muted-foreground text-pretty">{tool.description}</p>
                       </div>
                       <Badge variant="secondary" className="shrink-0 text-xs">
                         Pronto
@@ -136,48 +137,52 @@ export default function HomePage() {
             </ul>
           </section>
 
-          <section aria-labelledby="config-title">
-            <h2 id="config-title" className="mb-3 text-base font-semibold">
+          <section aria-labelledby="config-title" className="space-y-3">
+            <h2 id="config-title" className="text-base font-semibold">
               Configura tu negocio
             </h2>
             <ul>
               <li>
                 <Link
                   href="/tools/pos"
-                  className="flex min-h-16 items-center gap-3.5 rounded-xl border bg-card px-4 py-3.5 active:bg-accent"
+                  className={cn(
+                    "flex min-h-16 items-center gap-3.5 rounded-xl border bg-card px-4 py-3",
+                    "transition-colors hover:bg-accent active:bg-accent",
+                    "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  )}
                 >
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
                     <Store className="size-5 text-muted-foreground" aria-hidden="true" />
                   </span>
-                  <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-                    <span className="text-base font-semibold">Punto de venta</span>
+                  <span className="flex min-w-0 flex-1 items-center gap-2">
+                    <span className="text-base font-medium">Punto de venta</span>
                     <Badge variant="secondary" className="text-xs">
                       Configuración
                     </Badge>
                   </span>
-                  <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  <ChevronRight className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
                 </Link>
               </li>
             </ul>
           </section>
 
-          <section aria-labelledby="upcoming-title">
-            <h2 id="upcoming-title" className="mb-3 text-base font-semibold">
+          <section aria-labelledby="upcoming-title" className="space-y-3">
+            <h2 id="upcoming-title" className="text-base font-semibold">
               Más adelante
             </h2>
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {upcomingTools.map((tool) => (
-                <li key={tool.title} className="rounded-xl border border-dashed p-4 opacity-70">
-                  <div className="mb-2.5 flex items-center justify-between gap-2">
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
-                      <tool.icon className="size-[18px] text-muted-foreground" aria-hidden="true" />
+                <li key={tool.title} className="rounded-xl border bg-card/30 p-4 opacity-80 grayscale-[0.5]">
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <span className="flex size-11 items-center justify-center rounded-xl bg-muted">
+                      <tool.icon className="size-5 text-muted-foreground" aria-hidden="true" />
                     </span>
                     <Badge variant="secondary" className="text-xs">
                       Pronto
                     </Badge>
                   </div>
-                  <p className="text-[15px] font-semibold">{tool.title}</p>
-                  <p className="text-sm text-muted-foreground">{tool.description}</p>
+                  <p className="text-base font-medium">{tool.title}</p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground text-pretty">{tool.description}</p>
                 </li>
               ))}
             </ul>
@@ -192,8 +197,8 @@ export default function HomePage() {
 
 function ToolIcon({ icon: Icon, muted = false }: { icon: LucideIcon; muted?: boolean }) {
   return (
-    <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent">
-      <Icon className={muted ? "size-[22px] text-muted-foreground" : "size-[22px] text-primary"} aria-hidden="true" />
+    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
+      <Icon className={cn("size-5", muted ? "text-muted-foreground" : "text-primary")} aria-hidden="true" />
     </span>
   )
 }
