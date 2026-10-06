@@ -507,7 +507,6 @@ export function NoteWizard({ initialNote }: NoteWizardProps) {
         open={savedNote !== null}
         onOpenChange={(o) => !o && router.push(SALES_NOTES_ROUTES.list)}
         title={savedNote ? `${kindLabel(savedNote.status)} ${savedNote.folio}` : ''}
-        mobileHeight="max-h-[92dvh]"
         footer={
           savedNote && (
             <DocumentActions

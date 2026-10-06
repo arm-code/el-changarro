@@ -142,7 +142,6 @@ export function NotesHistory() {
         open={selected !== null}
         onOpenChange={(o) => !o && setSelected(null)}
         title={selected ? `${selectedKind} ${selected.folio}` : ''}
-        mobileHeight="max-h-[92dvh]"
         headerAction={
           selected && (
             <Button
