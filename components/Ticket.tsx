@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { SaleHistoryItem } from '../app/types/pos';
+import { SaleHistoryItem } from '../app/tools/pos/types/pos';
 
 interface TicketProps {
     sale: SaleHistoryItem | null;
@@ -41,7 +41,7 @@ export default function Ticket({ sale }: TicketProps) {
             `}</style>
 
             <div className="text-center mb-4">
-                <h1 className="text-sm font-bold uppercase">Business Toolbox</h1>
+                <h1 className="text-sm font-bold uppercase">El Changarro</h1>
                 <p className="text-[10px]">VENTA DE PRODUCTOS Y SERVICIOS</p>
                 <div className="border-b border-dashed my-2"></div>
             </div>

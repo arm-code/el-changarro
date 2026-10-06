@@ -17,7 +17,7 @@ import {
     DollarSign
 } from "lucide-react";
 import { apiFetch } from "../../../../lib/api";
-import { Customer } from "../../../types/pos";
+import { Customer } from "../types/pos";
 import Toast, { ToastType } from "../../../../components/Toast";
 
 export default function CustomersPage() {

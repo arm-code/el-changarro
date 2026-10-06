@@ -23,7 +23,7 @@ import {
     Sparkles
 } from "lucide-react";
 import { apiFetch } from "../../../lib/api";
-import { Product, Customer, PaymentMethod, CreateSaleDto, SaleHistoryItem, Shift, User } from "../../types/pos";
+import { Product, Customer, PaymentMethod, CreateSaleDto, SaleHistoryItem, Shift, User } from "./types/pos";
 import Toast, { ToastType } from "../../../components/Toast";
 import Ticket from "../../../components/Ticket";
 

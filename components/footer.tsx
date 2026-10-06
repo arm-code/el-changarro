@@ -1,107 +1,56 @@
+// components/footer.tsx
 import Link from "next/link"
-import { Box, Briefcase } from "lucide-react"
+import { Wrench } from "lucide-react"
+import { availableTools } from "@/lib/tools-catalog"
 
-const footerLinks = {
-    product: [
-        { href: "/tools", label: "Herramientas" },
-        { href: "/tools/pos", label: "Punto de Venta" },
-        { href: "/tools/quotes", label: "Generador de Cotizaciones" },
-        { href: "/tools/expenses", label: "Control de Gastos" },
-        { href: "/pricing", label: "Precios" },
-    ],
-    resources: [
-        { href: "#", label: "Centro de Ayuda" },
-        { href: "#", label: "Blog" },
-        { href: "#", label: "Guías" },
-        { href: "#", label: "API" },
-    ],
-    company: [
-        { href: "https://www.arm-solutions.com.mx/", label: "Acerca de" },
-        { href: "#", label: "Contacto" },
-        { href: "#", label: "Privacidad" },
-        { href: "#", label: "Términos" },
-    ],
-}
+const focusRing = "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
 export function Footer() {
     return (
-        <footer className="border-t border-border bg-card">
-            <div className="container mx-auto max-w-6xl px-4 py-12">
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                    {/* Brand */}
+        <footer className="border-t bg-card px-4 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-10 sm:pt-14">
+            <div className="mx-auto max-w-4xl space-y-10">
+                <div className="grid gap-8 sm:grid-cols-2">
                     <div className="space-y-4">
-                        <Link href="/" className="flex items-center gap-2">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                                <Box className="h-5 w-5 text-primary-foreground" />
-                            </div>
-                            <span className="text-xl font-semibold">Business Toolbox</span>
+                        <Link href="/" className={`inline-flex items-center gap-2 rounded-lg ${focusRing}`}>
+                            <span className="flex size-9 items-center justify-center rounded-lg bg-primary">
+                                <Wrench className="size-5 text-primary-foreground" aria-hidden="true" />
+                            </span>
+                            <span className="text-xl font-semibold tracking-tight">El Changarro</span>
                         </Link>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Desarrollado por <Link className="underline text-primary" href="https://www.arm-solutions.com.mx/">ARM Solutions</Link>
-                        </p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Herramientas simples y asequibles diseñadas para pequeños negocios, tiendas locales y emprendedores.
+                        <p className="max-w-xs text-pretty text-[15px] leading-relaxed text-muted-foreground">
+                            Herramientas simples para changarros, tiendas y emprendedores.
                         </p>
                     </div>
 
-                    {/* Product Links */}
-                    <div>
-                        <h3 className="mb-4 text-sm font-semibold">Producto</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.product.map((link) => (
-                                <li key={link.href}>
+                    <nav aria-label="Herramientas" className="space-y-4">
+                        <h3 className="text-sm font-medium text-muted-foreground">Herramientas</h3>
+                        <ul className="space-y-1">
+                            {availableTools.map((tool) => (
+                                <li key={tool.id}>
                                     <Link
-                                        href={link.href}
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                        href={tool.href}
+                                        className={`inline-flex min-h-11 items-center rounded text-[15px] font-medium transition-colors hover:text-primary ${focusRing}`}
                                     >
-                                        {link.label}
+                                        {tool.title}
                                     </Link>
                                 </li>
                             ))}
                         </ul>
-                    </div>
-
-                    {/* Resources Links */}
-                    <div>
-                        <h3 className="mb-4 text-sm font-semibold">Recursos</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.resources.map((link, index) => (
-                                <li key={index}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Company Links */}
-                    <div>
-                        <h3 className="mb-4 text-sm font-semibold">Empresa</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.company.map((link, index) => (
-                                <li key={index}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    </nav>
                 </div>
 
-                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
-                    <p className="text-sm text-muted-foreground">
-                        &copy; {new Date().getFullYear()} ARM Solutions. Todos los derechos reservados.
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                        Hecho con <span className="text-red-500">💜</span> para pequeños negocios
+                <div className="flex flex-col gap-2 border-t pt-6 text-[15px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+                    <p>&copy; {new Date().getFullYear()} El Changarro. Hecho en Ciudad Juárez.</p>
+                    <p>
+                        Desarrollado por{" "}
+                        <a
+                            href="https://dejuarez.mx/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`rounded font-medium text-primary hover:underline ${focusRing}`}
+                        >
+                            dejuarez.mx
+                        </a>
                     </p>
                 </div>
             </div>

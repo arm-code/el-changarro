@@ -1,20 +1,20 @@
 {
-  "name": "Business Toolbox",
-  "short_name": "BT",
-  "description": "Herramientas de negocio sencillas por arm-solutions",
+  "name": "El Changarro",
+  "short_name": "Changarro",
+  "description": "Herramientas sencillas para tu negocio: notas de venta, cotizaciones, contratos y control de gastos.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#7c3aed",
   "icons": [
     {
-      "src": "/logo-v3.png",
+      "src": "/icon_192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo-v3.png",
+      "src": "/icon_512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

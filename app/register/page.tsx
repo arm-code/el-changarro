@@ -65,7 +65,7 @@ export default function RegisterPage() {
                         <Box className="h-10 w-10 text-primary" />
                     </div>
                     <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">Crea tu Cuenta</h1>
-                    <p className="text-slate-500 font-medium lowercase tracking-wide">Únete a Business Toolbox hoy mismo</p>
+                    <p className="text-slate-500 font-medium lowercase tracking-wide">Únete a El Changarro hoy mismo</p>
                 </div>
 
                 <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
