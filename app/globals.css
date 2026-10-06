@@ -1,55 +1,89 @@
+/* app/globals.css */
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
+/* === Tema: Desierto Chihuahuense (versión minimalista) ===
+   Misma familia que el proyecto raíz (arena + ladrillo quemado), con dos ajustes:
+   - Las cards son MÁS CLARAS que el fondo, para que las herramientas "floten" sin sombras.
+   - --accent es una arena suave (superficie de hover). El naranja atardecer vive
+     en --sunset y se usa solo en detalles puntuales (ej. un "Nuevo"). */
 :root {
+  color-scheme: light;
   --radius: 0.75rem;
-  --background: oklch(0.99 0.002 286);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.541 0.281 293.009);
-  --primary-foreground: oklch(0.969 0.016 293.756);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+
+  /* Fondo: arena del desierto */
+  --background: oklch(0.97 0.016 78);
+  --foreground: oklch(0.2 0.042 38);
+
+  /* Cards y popovers: arena casi blanca */
+  --card: oklch(0.99 0.008 78);
+  --card-foreground: oklch(0.2 0.042 38);
+  --popover: oklch(0.99 0.008 78);
+  --popover-foreground: oklch(0.2 0.042 38);
+
+  /* Primario: ladrillo quemado, el color de La X */
+  --primary: oklch(0.48 0.19 32);
+  --primary-foreground: oklch(0.97 0.008 74);
+
+  /* Superficies suaves */
+  --secondary: oklch(0.93 0.02 76);
+  --secondary-foreground: oklch(0.28 0.04 40);
+  --muted: oklch(0.93 0.02 76);
+  --muted-foreground: oklch(0.5 0.05 55);
+  --accent: oklch(0.94 0.024 76);
+  --accent-foreground: oklch(0.28 0.04 40);
+
+  /* Naranja atardecer: usar con moderación */
+  --sunset: oklch(0.6 0.18 42);
+  --sunset-foreground: oklch(0.97 0.008 74);
+
+  /* Estados */
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.969 0.016 293.756);
-  --success: oklch(0.56 0.14 155);
-  --success-foreground: oklch(0.969 0.016 293.756);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.702 0.183 293.541);
+  --destructive-foreground: oklch(0.97 0.008 74);
+  --success: oklch(0.56 0.16 150);
+  --success-foreground: oklch(0.97 0.008 74);
+
+  /* Bordes: taupe cálido, suave */
+  --border: oklch(0.88 0.022 74);
+  --input: oklch(0.86 0.024 74);
+  --ring: oklch(0.48 0.19 32);
 }
 
+/* Noche en el desierto: marrón profundo cálido, no negro puro */
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.19 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.65 0.23 292.717);
-  --primary-foreground: oklch(0.969 0.016 293.756);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.141 0.005 285.823);
-  --success: oklch(0.74 0.15 155);
-  --success-foreground: oklch(0.141 0.005 285.823);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.541 0.281 293.009);
+  color-scheme: dark;
+  --background: oklch(0.17 0.012 45);
+  --foreground: oklch(0.95 0.012 78);
+
+  --card: oklch(0.21 0.014 45);
+  --card-foreground: oklch(0.95 0.012 78);
+  --popover: oklch(0.23 0.015 45);
+  --popover-foreground: oklch(0.95 0.012 78);
+
+  /* Ladrillo más claro + texto oscuro encima = contraste correcto en oscuro */
+  --primary: oklch(0.68 0.17 38);
+  --primary-foreground: oklch(0.16 0.02 40);
+
+  --secondary: oklch(0.26 0.015 45);
+  --secondary-foreground: oklch(0.95 0.012 78);
+  --muted: oklch(0.26 0.015 45);
+  --muted-foreground: oklch(0.72 0.03 65);
+  --accent: oklch(0.27 0.016 45);
+  --accent-foreground: oklch(0.95 0.012 78);
+
+  --sunset: oklch(0.72 0.16 50);
+  --sunset-foreground: oklch(0.16 0.02 40);
+
+  --destructive: oklch(0.7 0.19 22);
+  --destructive-foreground: oklch(0.16 0.02 40);
+  --success: oklch(0.74 0.15 150);
+  --success-foreground: oklch(0.16 0.02 40);
+
+  --border: oklch(0.95 0.02 70 / 12%);
+  --input: oklch(0.95 0.02 70 / 16%);
+  --ring: oklch(0.68 0.17 38);
 }
 
 @theme inline {
@@ -69,6 +103,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-sunset: var(--sunset);
+  --color-sunset-foreground: var(--sunset-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -90,4 +126,38 @@
     @apply bg-background text-foreground antialiased;
     -webkit-tap-highlight-color: transparent;
   }
+}
+
+/* Scroll suave solo si la persona no pidió reducir movimiento */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Cuadrícula sutil del hero, se desvanece hacia abajo */
+.hero-grid {
+  background-image:
+    linear-gradient(oklch(0.3 0.04 40 / 6%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.3 0.04 40 / 6%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+  mask-image: linear-gradient(to bottom, #000 30%, transparent);
+}
+
+.dark .hero-grid {
+  background-image:
+    linear-gradient(oklch(0.95 0.02 70 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.95 0.02 70 / 5%) 1px, transparent 1px);
+}
+
+/* Borde inferior en zigzag, como un ticket cortado */
+.receipt-edge {
+  --tooth: 8px;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(var(--tooth) * 2) 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(var(--tooth) * 2) 100%;
+}
+
+.receipt-shadow {
+  filter: drop-shadow(0 10px 18px oklch(0.2 0.042 38 / 14%));
 }

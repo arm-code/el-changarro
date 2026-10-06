@@ -1,83 +1,15 @@
 // app/page.tsx
 import Link from "next/link"
-import {
-  Receipt,
-  FileText,
-  FileSignature,
-  Wallet,
-  Calculator,
-  Store,
-  BookOpen,
-  Package,
-  Tag,
-  ChevronRight,
-  BarChart3,
-  Users,
-  type LucideIcon,
-} from "lucide-react"
+import { ChevronDown, ChevronRight, Store } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { InstallBanner } from "@/components/home/install-banner"
+import { ReceiptPreview } from "@/components/home/receipt-preview"
+import { availableTools, upcomingTools } from "@/lib/tools-catalog"
 import { cn } from "@/lib/utils"
 
-const dailyTools = [
-  {
-    title: "Notas de venta",
-    description: "Haz recibos para tus clientes en segundos",
-    icon: Receipt,
-    href: "/tools/sales-note",
-  },
-  {
-    title: "Cotizaciones",
-    description: "Manda cotizaciones con tu marca por WhatsApp",
-    icon: FileText,
-  },
-  {
-    title: "Contratos de evento",
-    description: "Contratos de renta listos para firmar",
-    icon: FileSignature,
-  },
-  {
-    title: "Control de gastos",
-    description: "Lleva el control de lo que entra y sale",
-    icon: Wallet,
-    href: "/tools/expenses",
-  },
-  {
-    title: "Corte diario",
-    description: "Cierra el día y conoce tus ganancias",
-    icon: Calculator,
-  },
-]
-
-const upcomingTools = [
-  {
-    title: "Libreta de fiado",
-    description: "Para saber quién te debe, sin el cuaderno",
-    icon: BookOpen,
-  },
-  {
-    title: "Inventario",
-    description: "Cuenta lo que tienes y lo que se te está acabando",
-    icon: Package,
-  },
-  {
-    title: "Calculadora de precio",
-    description: "Súmale tu ganancia al costo y ya sabes cuánto cobrar",
-    icon: Tag,
-  },
-  {
-    title: "Reportes de ventas",
-    description: "Visualiza las tendencias de tus ventas y productos más vendidos",
-    icon: BarChart3,
-  },
-  {
-    title: "Directorio de clientes",
-    description: "Registro de tus clientes y sus compras",
-    icon: Users,
-  },
-]
+const focusRing = "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 
 export default function HomePage() {
   return (
@@ -85,120 +17,137 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
-          <header className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl text-balance">
-              Las herramientas de tu changarro
-            </h1>
-            <p className="max-w-prose text-base leading-relaxed text-muted-foreground text-pretty">
-              Notas de venta, cotizaciones, gastos y contratos, listos desde tu celular.
-            </p>
-          </header>
+        {/* 1. Hero: qué es y qué puedo hacer ya */}
+        <section className="relative isolate overflow-hidden">
+          <div aria-hidden="true" className="hero-grid absolute inset-0 -z-10" />
 
-          <InstallBanner />
+          <div className="mx-auto grid max-w-4xl gap-10 px-4 pb-14 pt-10 sm:pt-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-12 md:pb-20">
+            <div className="space-y-6">
+              <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+                Tu changarro, organizado desde el celular
+              </h1>
+              <p className="max-w-prose text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Haz notas de venta, lleva tus gastos y resuelve lo del día a día con herramientas
+                sencillas. Se abren y se usan, sin complicarte.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button asChild size="lg" className="h-12 w-full rounded-xl px-6 text-base sm:w-auto">
+                  <Link href="/tools/sales-note">Hacer una nota de venta</Link>
+                </Button>
+                <Button asChild variant="ghost" size="lg" className="h-12 w-full rounded-xl px-6 text-base sm:w-auto">
+                  <Link href="#herramientas">Ver todas las herramientas</Link>
+                </Button>
+              </div>
+            </div>
 
-          <section aria-labelledby="daily-tools-title" className="space-y-3">
-            <h2 id="daily-tools-title" className="text-base font-semibold">
-              Herramientas del día a día
-            </h2>
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {dailyTools.map((tool) => (
-                <li key={tool.title}>
-                  {tool.href ? (
-                    <Link
-                      href={tool.href}
-                      className={cn(
-                        "flex min-h-20 items-center gap-3.5 rounded-xl border bg-card p-4",
-                        "transition-colors hover:bg-accent active:bg-accent",
-                        "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                      )}
-                    >
-                      <ToolIcon icon={tool.icon} />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-base font-medium">{tool.title}</p>
-                        <p className="text-sm text-muted-foreground text-pretty">{tool.description}</p>
-                      </div>
-                      <ChevronRight className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
-                    </Link>
-                  ) : (
-                    <div className="flex min-h-20 items-center gap-3.5 rounded-xl border bg-card/50 p-4 opacity-80 grayscale-[0.5]">
-                      <ToolIcon icon={tool.icon} muted />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-base font-medium">{tool.title}</p>
-                        <p className="text-sm text-muted-foreground text-pretty">{tool.description}</p>
-                      </div>
-                      <Badge variant="secondary" className="shrink-0 text-xs">
-                        Pronto
-                      </Badge>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
+            <div className="mx-auto w-full max-w-[17rem] md:ml-auto md:mr-0">
+              <ReceiptPreview />
+            </div>
+          </div>
+        </section>
 
-          <section aria-labelledby="config-title" className="space-y-3">
-            <h2 id="config-title" className="text-base font-semibold">
-              Configura tu negocio
-            </h2>
-            <ul>
-              <li>
+        {/* 2. Herramientas que ya funcionan */}
+        <section
+          id="herramientas"
+          aria-labelledby="tools-title"
+          className="mx-auto max-w-4xl scroll-mt-20 px-4 py-12 sm:py-16"
+        >
+          <h2 id="tools-title" className="text-xl font-semibold tracking-tight">
+            Herramientas listas para usar
+          </h2>
+
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+            {availableTools.map((tool) => (
+              <li key={tool.id}>
                 <Link
-                  href="/tools/pos"
+                  href={tool.href}
                   className={cn(
-                    "flex min-h-16 items-center gap-3.5 rounded-xl border bg-card px-4 py-3",
-                    "transition-colors hover:bg-accent active:bg-accent",
-                    "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    "group flex min-h-24 items-center gap-4 rounded-2xl border bg-card p-4 sm:p-5",
+                    "transition-colors hover:border-primary/40 hover:bg-accent active:bg-accent",
+                    focusRing
                   )}
                 >
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
-                    <Store className="size-5 text-muted-foreground" aria-hidden="true" />
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <tool.icon className="size-6" aria-hidden="true" />
                   </span>
-                  <span className="flex min-w-0 flex-1 items-center gap-2">
-                    <span className="text-base font-medium">Punto de venta</span>
-                    <Badge variant="secondary" className="text-xs">
-                      Configuración
-                    </Badge>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-base font-semibold">{tool.title}</span>
+                    <span className="mt-0.5 block text-pretty text-sm leading-snug text-muted-foreground">
+                      {tool.description}
+                    </span>
                   </span>
-                  <ChevronRight className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
+                  <ChevronRight
+                    className="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
                 </Link>
               </li>
-            </ul>
-          </section>
+            ))}
+          </ul>
 
-          <section aria-labelledby="upcoming-title" className="space-y-3">
-            <h2 id="upcoming-title" className="text-base font-semibold">
-              Más adelante
-            </h2>
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {upcomingTools.map((tool) => (
-                <li key={tool.title} className="rounded-xl border bg-card/30 p-4 opacity-80 grayscale-[0.5]">
-                  <div className="mb-3 flex items-center justify-between gap-2">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-muted">
-                      <tool.icon className="size-5 text-muted-foreground" aria-hidden="true" />
-                    </span>
-                    <Badge variant="secondary" className="text-xs">
-                      Pronto
-                    </Badge>
-                  </div>
-                  <p className="text-base font-medium">{tool.title}</p>
-                  <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground text-pretty">{tool.description}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
+          {/* Configuración: fila discreta, no compite con las herramientas */}
+          <Link
+            href="/tools/pos"
+            className={cn(
+              "group mt-4 flex min-h-14 items-center gap-3 rounded-xl border border-dashed px-4 py-3",
+              "transition-colors hover:bg-accent active:bg-accent",
+              focusRing
+            )}
+          >
+            <Store className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-medium">Punto de venta</span>
+              <span className="block text-sm text-muted-foreground">Configura tu negocio</span>
+            </span>
+            <ChevronRight
+              className="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
+
+          {/* Si el banner no renderiza nada (app ya instalada), el contenedor se oculta */}
+          <div className="mt-8 empty:hidden">
+            <InstallBanner />
+          </div>
+        </section>
+
+        {/* 3. Próximamente: banda con otro fondo y colapsada para no saturar */}
+        <section aria-labelledby="soon-title" className="border-t bg-secondary/40">
+          <div className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+            <details className="group">
+              <summary
+                className={cn(
+                  "flex min-h-12 cursor-pointer list-none items-center gap-3 rounded-lg [&::-webkit-details-marker]:hidden",
+                  focusRing
+                )}
+              >
+                <h2 id="soon-title" className="mr-auto text-xl font-semibold tracking-tight">
+                  Próximamente
+                </h2>
+                <span className="text-sm text-muted-foreground">{upcomingTools.length} herramientas</span>
+                <ChevronDown
+                  className="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                  aria-hidden="true"
+                />
+              </summary>
+
+              <ul className="mt-4 divide-y rounded-2xl border bg-card">
+                {upcomingTools.map((tool) => (
+                  <li key={tool.id} className="flex items-start gap-3 px-4 py-3.5">
+                    <tool.icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <p className="text-[15px] font-medium">{tool.title}</p>
+                      <p className="text-pretty text-sm text-muted-foreground">{tool.description}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </div>
+        </section>
       </main>
 
       <Footer />
     </div>
-  )
-}
-
-function ToolIcon({ icon: Icon, muted = false }: { icon: LucideIcon; muted?: boolean }) {
-  return (
-    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
-      <Icon className={cn("size-5", muted ? "text-muted-foreground" : "text-primary")} aria-hidden="true" />
-    </span>
   )
 }
