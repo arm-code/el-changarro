@@ -2,7 +2,6 @@ import Link from "next/link"
 import { Wrench } from "lucide-react"
 
 const productLinks = [
-    { href: "/tools", label: "Herramientas" },
     { href: "/tools/sales-note", label: "Notas de venta" },
     { href: "/tools/expenses", label: "Control de gastos" },
 ]

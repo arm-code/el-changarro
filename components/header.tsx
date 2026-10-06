@@ -12,9 +12,7 @@ import {
 import { Menu, Wrench, Sun, Moon } from "lucide-react"
 import { useHasMounted } from "@/hooks/useHasMounted"
 
-const navItems = [
-    { href: "/tools", label: "Herramientas" },
-]
+const navItems: { href: string; label: string }[] = []
 
 function ThemeToggle() {
     const { resolvedTheme, setTheme } = useTheme()

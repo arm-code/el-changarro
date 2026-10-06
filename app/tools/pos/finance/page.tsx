@@ -18,7 +18,7 @@ import {
     Sparkles
 } from "lucide-react";
 import { apiFetch } from "../../../../lib/api";
-import { Shift, Expense, User } from "../../../types/pos";
+import { Shift, Expense, User } from "../types/pos";
 import Toast, { ToastType } from "../../../../components/Toast";
 
 export default function FinancePage() {

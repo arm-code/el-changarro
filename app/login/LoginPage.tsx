@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Box, Mail, Lock, Loader2, ArrowRight, Sparkles } from "lucide-react";
 import { apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
-import { AuthResponse } from "../types/pos";
+import { AuthResponse } from "../tools/pos/types/pos";
 import Toast, { ToastType } from "../../components/Toast";
 
 export default function LoginPage() {

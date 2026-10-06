@@ -18,7 +18,7 @@ import {
     Filter
 } from "lucide-react";
 import { apiFetch } from "../../../../../lib/api";
-import { Product, InventoryAdjustment } from "../../../../types/pos";
+import { Product, InventoryAdjustment } from "../../types/pos";
 import Toast, { ToastType } from "../../../../../components/Toast";
 
 export default function InventoryAdjustmentsPage() {

@@ -1,4 +1,4 @@
-import ExpensesPage from "./ExpensesPage";
+
 
 export const metadata = {
   title: "Control de Gastos | El Changarro",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <ExpensesPage />;
+  return <h1>Expenses</h1>;
 }

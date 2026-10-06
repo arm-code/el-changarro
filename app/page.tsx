@@ -10,6 +10,8 @@ import {
   Package,
   Tag,
   ChevronRight,
+  BarChart3,
+  Users,
   type LucideIcon,
 } from "lucide-react"
 import { Header } from "@/components/header"
@@ -67,6 +69,16 @@ const upcomingTools: { title: string; description: string; icon: LucideIcon }[] 
     title: "Calculadora de precio",
     description: "Súmale tu ganancia al costo y ya sabes cuánto cobrar",
     icon: Tag,
+  },
+  {
+    title: "Reportes de ventas",
+    description: "Visualiza las tendencias de tus ventas y productos más vendidos",
+    icon: BarChart3,
+  },
+  {
+    title: "Directorio de clientes",
+    description: "Registro de tus clientes y sus compras",
+    icon: Users,
   },
 ]
 
