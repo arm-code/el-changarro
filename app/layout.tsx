@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: 'El Changarro - Herramientas sencillas para tu negocio',
   description: 'Notas de venta, cotizaciones, contratos y control de gastos, listos desde tu celular. Herramientas simples para changarros, tiendas y emprendedores.',
   manifest: "/manifest.json",
+  icons: {
+    icon: '/icon_192x192.png',
+    apple: '/icon_192x192.png',
+  },
 }
 
 export default function RootLayout({
