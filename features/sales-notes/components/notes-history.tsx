@@ -1,8 +1,9 @@
+// features/sales-notes/components/notes-history.tsx
 'use client'
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { FilePlus2, Pencil, Store, Trash2 } from 'lucide-react'
+import { ArrowLeft, FilePlus2, Pencil, Store, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDeleteSalesNote, useSalesNotes } from '../hooks/use-sales-notes'
 import { useBusinessInfo } from '../hooks/use-business-info'
@@ -13,7 +14,7 @@ import { NoteCardPreview } from './note-card-preview'
 import { PrintSaleNoteDocument } from './sale-note-document'
 import { DocumentActions } from './document-actions'
 import { BusinessInfoSheet } from './business-info-sheet'
-import { PageHeader } from '@/components/ui/page-header'
+import { PageHeader } from '@/components/page-header'
 import { Button } from '@/components/ui/button'
 import { TOUCH } from '@/components/ui/detail'
 import { MobileFab } from '@/components/ui/mobile-fab'
@@ -48,45 +49,62 @@ export function NotesHistory() {
     if (!noteToDelete) return
     deleteMutation.mutate(noteToDelete.id, {
       onSuccess: () => {
-        toast.success('Nota eliminada')
+        toast.success(`${noteToDelete.status === 'quote' ? 'Cotización eliminada' : 'Nota eliminada'}`)
         setNoteToDelete(null)
       },
-      onError: () => toast.error('No se pudo eliminar la nota.'),
+      onError: () => toast.error('No se pudo eliminar el documento. Revisa tu conexión.'),
     })
   }
 
   return (
     <div className="space-y-8 pb-28 sm:pb-8">
-      <PageHeader
-        title="Tus notas"
-        description="Busca, comparte o administra tus notas y cotizaciones."
-        action={
-          <Button asChild>
-            <Link href={SALES_NOTES_ROUTES.create}>
-              <FilePlus2 aria-hidden />
-              Crear nota
-            </Link>
-          </Button>
-        }
-      />
+      {/* Grupo: Navegación + Encabezado. Así conviven sin romper el space-y-8 */}
+      <div>
+        <Button
+          asChild
+          variant="ghost"
+          className="-ml-3 mb-2 text-muted-foreground hover:text-foreground"
+        >
+          <Link href="/">
+            <ArrowLeft aria-hidden="true" />
+            Volver a herramientas
+          </Link>
+        </Button>
+        <PageHeader
+          title="Tus notas"
+          description="Busca, comparte o administra tus notas y cotizaciones."
+          action={
+            <Button asChild className={TOUCH}>
+              <Link href={SALES_NOTES_ROUTES.create}>
+                <FilePlus2 aria-hidden="true" />
+                Crear nota
+              </Link>
+            </Button>
+          }
+        />
+      </div>
 
       <button
         type="button"
         onClick={() => setBusinessOpen(true)}
-        className="flex w-full items-center gap-3 rounded-xl border bg-card px-4 py-3 text-left transition-colors hover:bg-accent/60"
+        className={cn(
+          "flex w-full min-h-20 items-center gap-3.5 rounded-xl border bg-card p-4 text-left",
+          "transition-colors hover:bg-accent active:bg-accent",
+          "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        )}
       >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <Store className="size-5 text-muted-foreground" aria-hidden />
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted">
+          <Store className="size-5 text-muted-foreground" aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[15px] font-medium">
+          <span className="block truncate text-base font-medium">
             {business.name || 'Agrega el nombre de tu negocio'}
           </span>
-          <span className="block text-sm text-muted-foreground">
+          <span className="block truncate text-sm text-muted-foreground text-pretty">
             {business.name ? 'Sale en tus documentos · Toca para editar' : 'Para que salga en tus notas'}
           </span>
         </span>
-        <Pencil className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+        <Pencil className="size-5 shrink-0 text-muted-foreground/60" aria-hidden="true" />
       </button>
 
       <section aria-label="Buscar notas">
@@ -111,16 +129,21 @@ export function NotesHistory() {
         open={selected !== null}
         onOpenChange={(o) => !o && setSelected(null)}
         title={selected ? `${selectedKind} ${selected.folio}` : ''}
-        mobileHeight="92dvh"
+        mobileHeight="max-h-[92dvh]"
         headerAction={
           selected && (
-            <Button asChild variant="ghost" size="icon" className="size-11 rounded-full text-muted-foreground hover:text-foreground">
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="size-11 rounded-full text-muted-foreground hover:text-foreground"
+            >
               <Link
                 href={SALES_NOTES_ROUTES.edit(selected.id)}
                 onClick={() => setSelected(null)}
                 aria-label={`Editar ${selectedKind.toLowerCase()}`}
               >
-                <Pencil className="size-5" aria-hidden />
+                <Pencil className="size-5" aria-hidden="true" />
               </Link>
             </Button>
           )
@@ -129,7 +152,7 @@ export function NotesHistory() {
           selected && (
             <DocumentActions
               placement="inline"
-              filename={`${selectedKind.toLowerCase()}-${toSlug(selected.folio, 'nota')}`}
+              filename={`${toSlug(selectedKind, 'nota')}-${toSlug(selected.folio, 'folio')}`}
               exportNode={<PrintSaleNoteDocument note={selected} business={business} />}
             />
           )
@@ -148,7 +171,7 @@ export function NotesHistory() {
                   setSelected(null)
                 }}
               >
-                <Trash2 aria-hidden />
+                <Trash2 aria-hidden="true" />
                 Eliminar {selectedKind.toLowerCase()}
               </Button>
             </div>
