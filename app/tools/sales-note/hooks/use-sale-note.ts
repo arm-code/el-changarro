@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 const ITEMS_STORAGE_KEY = 'sale-note-items';
 const BUSINESS_NAME_STORAGE_KEY = 'sale-note-business-name';
-const DEFAULT_BUSINESS_NAME = 'BUSINESS TOOLBOX';
+const DEFAULT_BUSINESS_NAME = 'MI NEGOCIO';
 
 export const useSaleNote = () => {
   const [items, setItems] = useState<SaleItem[]>([]);

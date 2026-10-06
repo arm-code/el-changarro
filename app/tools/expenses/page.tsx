@@ -1,7 +1,7 @@
 import ExpensesPage from "./ExpensesPage";
 
 export const metadata = {
-  title: "Control de Gastos | Business Toolbox",
+  title: "Control de Gastos | El Changarro",
   description: "Gestiona los gastos de tu negocio de forma sencilla.",
 };
 

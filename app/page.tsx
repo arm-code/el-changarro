@@ -1,110 +1,73 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Header } from "@/components/header"
-
 import {
-  ShoppingCart,
-  FileText,
-  Calculator,
   Receipt,
+  FileText,
+  FileSignature,
   Wallet,
-  ArrowRight,
-  CheckCircle2,
-  Star,
-  Users,
-  TrendingUp,
-  Zap,
-  Shield,
-  Smartphone,
+  Calculator,
+  Store,
+  BookOpen,
+  Package,
+  Tag,
+  ChevronRight,
+  type LucideIcon,
 } from "lucide-react"
-import { ToolCard } from "@/components/tool-card"
+import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { Badge } from "@/components/ui/badge"
+import { InstallBanner } from "@/components/home/install-banner"
 
-const tools = [
-/*
+const dailyTools: {
+  title: string
+  description: string
+  icon: LucideIcon
+  href?: string
+}[] = [
   {
-    title: "Punto de Venta",
-    description: "Registra ventas rápidamente, gestiona productos, imprime tickets y lleva el control de tu flujo de caja diario.",
-    icon: ShoppingCart,
-    href: "/tools/pos",
-    badge: "Free" as const,
-    featured: true,
-  },
-*/
-  {
-    title: "Generador de Notas de Venta",
-    description: "Crea notas de venta rápidas y facturas desde tu teléfono o computadora en segundos.",
+    title: "Notas de venta",
+    description: "Haz recibos para tus clientes en segundos",
     icon: Receipt,
     href: "/tools/sales-note",
-    badge: "Free" as const,
   },
   {
-    title: "Generador de Cotizaciones",
-    description: "Crea cotizaciones profesionales para tus clientes con la marca de tu negocio.",
+    title: "Cotizaciones",
+    description: "Manda cotizaciones con tu marca por WhatsApp",
     icon: FileText,
-    href: "/tools/quotes",
-    badge: "Free" as const,
   },
   {
-    title: "Calculadora Financiera",
-    description: "Calcula márgenes de ganancia, impuestos, puntos de equilibrio y pagos a plazos.",
-    icon: Calculator,
-    href: "/tools/calculator",
-    badge: "Free" as const,
+    title: "Contratos de evento",
+    description: "Contratos de renta listos para firmar",
+    icon: FileSignature,
   },
   {
-    title: "Control de Gastos",
-    description: "Registra tus gastos diarios de forma sencilla y mantén el control de los gastos de tu negocio.",
+    title: "Control de gastos",
+    description: "Lleva el control de lo que entra y sale",
     icon: Wallet,
     href: "/tools/expenses",
-    badge: "Free" as const,
+  },
+  {
+    title: "Corte diario",
+    description: "Cierra el día y conoce tus ganancias",
+    icon: Calculator,
   },
 ]
 
-const benefits = [
+const upcomingTools: { title: string; description: string; icon: LucideIcon }[] = [
   {
-    icon: Zap,
-    title: "Rápido y Sencillo",
-    description: "Realiza tus tareas más comunes en solo 1-2 toques. No requiere entrenamiento.",
+    title: "Libreta de fiado",
+    description: "Para saber quién te debe, sin el cuaderno",
+    icon: BookOpen,
   },
   {
-    icon: Smartphone,
-    title: "Funciona en todos lados",
-    description: "Úsalo en tu teléfono, tablet o computadora. Tus datos se sincronizan automáticamente.",
+    title: "Inventario",
+    description: "Cuenta lo que tienes y lo que se te está acabando",
+    icon: Package,
   },
   {
-    icon: Shield,
-    title: "Seguro y Confiable",
-    description: "Tus datos comerciales están protegidos con seguridad de nivel empresarial.",
+    title: "Calculadora de precio",
+    description: "Súmale tu ganancia al costo y ya sabes cuánto cobrar",
+    icon: Tag,
   },
-]
-
-const testimonials = [
-  {
-    quote: "Finalmente, software que entiende el pequeño negocio. Empecé a vender más el mismo día que lo instalé.",
-    author: "Maria Garcia",
-    role: "Dueña de tienda",
-    rating: 5,
-  },
-  {
-    quote: "El generador de cotizaciones me ahorró horas cada semana. A mis clientes les encanta el aspecto profesional.",
-    author: "Carlos Rodriguez",
-    role: "Fontanero",
-    rating: 5,
-  },
-  {
-    quote: "Puedo rastrear todo desde mi teléfono mientras estoy en el puesto de comida. Simplemente funciona.",
-    author: "Ana Mendez",
-    role: "Vendedora de comida",
-    rating: 5,
-  },
-]
-
-const stats = [
-  { value: "10,000+", label: "Negocios" },
-  { value: "500K+", label: "Ventas procesadas" },
-  { value: "4.9/5", label: "Valoración de usuarios" },
 ]
 
 export default function HomePage() {
@@ -113,193 +76,112 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden border-b border-border">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
-          <div className="container mx-auto max-w-6xl px-4 py-20 md:py-32">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-                <Zap className="h-4 w-4" />
-                Herramientas sencillas para negocios reales
-              </div>
-              <h1 className="text-balance text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                Todo lo que tu pequeño negocio necesita para{" "}
-                <span className="text-primary">crecer</span>
-              </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground leading-relaxed md:text-xl">
-                Vende más rápido, ahorra tiempo y mantente organizado con herramientas comerciales simples
-                diseñadas para tiendas locales, puestos de comida y emprendedores como tú.
-              </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button size="lg" className="w-full gap-2 sm:w-auto" asChild>
-                  <Link href="/tools">
-                    Pruébalo gratis
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
-                  <Link href="/register">Crear cuenta gratis</Link>
-                </Button>
-              </div>
-              <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-accent" />
-                  Sin tarjeta de crédito
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-accent" />
-                  Plan gratuito siempre
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-accent" />
-                  Configuración en minutos
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-accent" />
-                  Usa desde tu celular
-                </span>
-              </div>
-            </div>
+        <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Las herramientas de tu changarro
+            </h1>
+            <p className="max-w-md text-base text-muted-foreground">
+              Notas de venta, cotizaciones, gastos y contratos, listos desde tu celular.
+            </p>
           </div>
-        </section>
 
-        {/* Stats Section */}
-        <section className="border-b border-border bg-card">
-          <div className="container mx-auto max-w-6xl px-4 py-12">
-            <div className="grid grid-cols-3 gap-8">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-2xl font-bold text-primary md:text-3xl">{stat.value}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          <InstallBanner />
 
-        {/* Tools Section */}
-        <section className="py-20 md:py-28">
-          <div className="container mx-auto max-w-6xl px-4">
-            <div className="mx-auto mb-12 max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                Tu Caja de Herramientas para el Negocio
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Todo lo que necesitas para dirigir tu negocio, <span className="font-semibold">todo en un solo lugar</span>.
-                Empieza gratis y mejora cuando necesites más.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {tools.map((tool) => (
-                <ToolCard key={tool.title} {...tool} />
+          <section aria-labelledby="daily-tools-title">
+            <h2 id="daily-tools-title" className="sr-only">
+              Herramientas del día a día
+            </h2>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {dailyTools.map((tool) => (
+                <li key={tool.title}>
+                  {tool.href ? (
+                    <Link
+                      href={tool.href}
+                      className="flex min-h-19 items-center gap-3.5 rounded-xl border bg-card p-4 active:bg-accent"
+                    >
+                      <ToolIcon icon={tool.icon} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-base font-semibold">{tool.title}</p>
+                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                      </div>
+                      <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    </Link>
+                  ) : (
+                    <div className="flex min-h-19 items-center gap-3.5 rounded-xl border border-dashed p-4 opacity-70">
+                      <ToolIcon icon={tool.icon} muted />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-base font-semibold">{tool.title}</p>
+                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                      </div>
+                      <Badge variant="secondary" className="shrink-0 text-xs">
+                        Pronto
+                      </Badge>
+                    </div>
+                  )}
+                </li>
               ))}
-            </div>
-            <div className="mt-12 text-center">
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/tools" className="gap-2">
-                  Ver todas las herramientas
-                  <ArrowRight className="h-4 w-4" />
+            </ul>
+          </section>
+
+          <section aria-labelledby="config-title">
+            <h2 id="config-title" className="mb-3 text-base font-semibold">
+              Configura tu negocio
+            </h2>
+            <ul>
+              <li>
+                <Link
+                  href="/tools/pos"
+                  className="flex min-h-16 items-center gap-3.5 rounded-xl border bg-card px-4 py-3.5 active:bg-accent"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <Store className="size-5 text-muted-foreground" aria-hidden="true" />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                    <span className="text-base font-semibold">Punto de venta</span>
+                    <Badge variant="secondary" className="text-xs">
+                      Configuración
+                    </Badge>
+                  </span>
+                  <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 </Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+              </li>
+            </ul>
+          </section>
 
-        {/* Benefits Section */}
-        <section className="border-y border-border bg-card py-20 md:py-28">
-          <div className="container mx-auto max-w-6xl px-4">
-            <div className="mx-auto mb-12 max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                Diseñado para dueños de negocios ocupados
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Entendemos que tienes tiempo y paciencia limitados para software complicado.
-                Por eso hicimos todo ridículamente simple.
-              </p>
-            </div>
-            <div className="grid gap-8 md:grid-cols-3">
-              {benefits.map((benefit) => (
-                <Card key={benefit.title} className="border-0 bg-background shadow-none">
-                  <CardContent className="pt-6">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <benefit.icon className="h-6 w-6" />
-                    </div>
-                    <h3 className="mb-2 text-lg font-semibold">{benefit.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
-                  </CardContent>
-                </Card>
+          <section aria-labelledby="upcoming-title">
+            <h2 id="upcoming-title" className="mb-3 text-base font-semibold">
+              Más adelante
+            </h2>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {upcomingTools.map((tool) => (
+                <li key={tool.title} className="rounded-xl border border-dashed p-4 opacity-70">
+                  <div className="mb-2.5 flex items-center justify-between gap-2">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
+                      <tool.icon className="size-[18px] text-muted-foreground" aria-hidden="true" />
+                    </span>
+                    <Badge variant="secondary" className="text-xs">
+                      Pronto
+                    </Badge>
+                  </div>
+                  <p className="text-[15px] font-semibold">{tool.title}</p>
+                  <p className="text-sm text-muted-foreground">{tool.description}</p>
+                </li>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="py-20 md:py-28">
-          <div className="container mx-auto max-w-6xl px-4">
-            <div className="mx-auto mb-12 max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                Amado por dueños de pequeños negocios
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Únete a miles de emprendedores que transformaron sus operaciones diarias.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              {testimonials.map((testimonial, index) => (
-                <Card key={index} className="relative overflow-hidden">
-                  <CardContent className="pt-6">
-                    <div className="mb-4 flex gap-0.5">
-                      {Array.from({ length: testimonial.rating }).map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                      ))}
-                    </div>
-                    <blockquote className="mb-6 text-foreground leading-relaxed">
-                      &ldquo;{testimonial.quote}&rdquo;
-                    </blockquote>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                        {testimonial.author.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="font-medium">{testimonial.author}</div>
-                        <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="border-t border-border bg-primary/5 py-20 md:py-28">
-          <div className="container mx-auto max-w-6xl px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                ¿Listo para simplificar tu negocio?
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Empieza a usar nuestras herramientas gratuitas hoy mismo. Sin tarjeta de crédito, sin configuración complicada.
-                Solo herramientas simples que te ayudan a vender más y estresarte menos.
-              </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button size="lg" className="w-full gap-2 sm:w-auto" asChild>
-                  <Link href="/register">
-                    Empezar gratis
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
-                  <Link href="/tools">Explorar herramientas</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+            </ul>
+          </section>
+        </div>
       </main>
 
       <Footer />
     </div>
+  )
+}
+
+function ToolIcon({ icon: Icon, muted = false }: { icon: LucideIcon; muted?: boolean }) {
+  return (
+    <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent">
+      <Icon className={muted ? "size-[22px] text-muted-foreground" : "size-[22px] text-primary"} aria-hidden="true" />
+    </span>
   )
 }

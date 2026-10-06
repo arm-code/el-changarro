@@ -77,7 +77,7 @@ export default function LoginPage() {
                     <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-4">
                         <Box className="h-10 w-10 text-primary" />
                     </div>
-                    <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">Business Toolbox</h1>
+                    <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">El Changarro</h1>
                     <p className="text-slate-500 font-medium lowercase tracking-wide">Gestiona tu negocio de forma simple</p>
                 </div>
 

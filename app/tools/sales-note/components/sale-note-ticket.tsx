@@ -216,13 +216,13 @@ export function SaleNoteTicket({
 
             <div className="mt-12 text-center text-[10px] text-muted-foreground border-t pt-4 space-y-4">
                 <p>
-                    Gracias por su preferencia • Generado por business-toolbox, una herramienta creada por <Link href="https://www.arm-solutions.com.mx/">ARM Solutions</Link>. Puedes hacer uso de esta herramienta de forma gratuita en cualquier momento, visítanos en:
-                    <Link href="https://www.bt.arm-solutions.com.mx/" className="ml-1 text-slate-900 font-medium">bt.arm-solutions.com.mx</Link>
+                    Gracias por su preferencia • Generado con El Changarro, una herramienta creada por <Link href="https://www.arm-solutions.com.mx/">ARM Solutions</Link>. Puedes hacer uso de esta herramienta de forma gratuita en cualquier momento, visítanos en:
+                    <Link href="https://elchangarro.dejuarez.mx/" className="ml-1 text-slate-900 font-medium">elchangarro.dejuarez.mx</Link>
                 </p>
-                
+
                 <div className="flex items-center justify-center gap-1.5 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-default select-none">
                     <Box className="h-3 w-3" />
-                    <span className="font-bold tracking-tighter uppercase">Business Toolbox</span>
+                    <span className="font-bold tracking-tighter uppercase">El Changarro</span>
                 </div>
             </div>
 

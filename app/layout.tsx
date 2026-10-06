@@ -3,15 +3,14 @@ import { Geist, Geist_Mono } from 'next/font/google'
 
 import './globals.css'
 import { Toaster } from 'sonner';
+import { Providers } from '@/components/providers';
 
-
-
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  title: 'ARM Solutions - Herramientas de Negocio Sencillas para Pequeñas Empresas',
-  description: 'Tu caja de herramientas para el negocio: Punto de Venta, facturas, cotizaciones, control de gastos y más. Herramientas sencillas y accesibles diseñadas para pequeñas empresas, tiendas locales y emprendedores.',
+  title: 'El Changarro - Herramientas sencillas para tu negocio',
+  description: 'Notas de venta, cotizaciones, contratos y control de gastos, listos desde tu celular. Herramientas simples para changarros, tiendas y emprendedores.',
   manifest: "/manifest.json",
 };
 
@@ -25,13 +24,15 @@ export default function RootLayout({
     <html
       lang="es"
       suppressHydrationWarning
-      className="bg-background"
+      className={`bg-background ${geist.variable} ${geistMono.variable}`}
     >
       <body
         className="font-sans antialiased"
       >
-        <Toaster richColors closeButton position="bottom-right" />
-        {children}
+        <Providers>
+          <Toaster richColors closeButton position="bottom-right" />
+          {children}
+        </Providers>
       </body>
     </html>
   );
