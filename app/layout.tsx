@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
 
 import './globals.css'
@@ -35,6 +36,7 @@ export default function RootLayout({
           <Toaster richColors closeButton position="bottom-right" />
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   )
