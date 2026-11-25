@@ -1,3 +1,5 @@
+> ⚠️ **Repositorio archivado.** Este proyecto ya no se mantiene aquí: su desarrollo continúa en el monorepo [`arm-code/elchangarro`](https://github.com/arm-code/elchangarro) (carpeta `apps/toolbox`).
+
 # Business Toolbox by arm-solutions
 
 A minimalist toolbox for business management, designed to be fast, responsive, and mobile-friendly (PWA).
